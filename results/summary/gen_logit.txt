@@ -1,0 +1,15 @@
+Belinostat.h5ad n 2848 frac_logit<0 0.571 frac_logit<=2.5 1.0
+CHIR-99021.h5ad n 2848 frac_logit<0 0.621 frac_logit<=2.5 1.0
+Crizotinib.h5ad n 2848 frac_logit<0 0.577 frac_logit<=2.5 1.0
+Dabrafenib.h5ad n 2848 frac_logit<0 0.655 frac_logit<=2.5 1.0
+Dactolisib.h5ad n 2848 frac_logit<0 0.58 frac_logit<=2.5 1.0
+Dimethyl_Sulfoxide.h5ad n 2848 frac_logit<0 0.638 frac_logit<=2.5 1.0
+Foretinib.h5ad n 2848 frac_logit<0 0.602 frac_logit<=2.5 1.0
+Idelalisib.h5ad n 2848 frac_logit<0 0.657 frac_logit<=2.5 1.0
+LDN_193189.h5ad n 2848 frac_logit<0 0.574 frac_logit<=2.5 1.0
+Linagliptin.h5ad n 2848 frac_logit<0 0.528 frac_logit<=2.5 1.0
+O-Demethylated_Adapalene.h5ad n 2848 frac_logit<0 0.608 frac_logit<=2.5 1.0
+Palbociclib.h5ad n 2848 frac_logit<0 0.512 frac_logit<=2.5 1.0
+Penfluridol.h5ad n 2848 frac_logit<0 0.682 frac_logit<=2.5 1.0
+Porcn_Inhibitor_III.h5ad n 2848 frac_logit<0 0.463 frac_logit<=2.5 0.999
+R428.h5ad n 2848 frac_logit<0 0.528 frac_logit<=2.5 1.0

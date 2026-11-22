@@ -1,0 +1,64 @@
+1) Headline (generation run 0, downsampling seeds [np.int64(0), np.int64(1), np.int64(2)]), 12 compounds
+             Pearson Delta       DE Spearman LFC       PR AUC       DE overlap acc       Spearman effect size      
+                      mean   std            mean   std   mean   std           mean   std                 mean   std
+method                                                                                                             
+no_effect           -0.011 0.023          -0.180 0.039  0.094 0.000          0.000 0.000               -0.156 0.079
+perturb_mean         0.332 0.017           0.229 0.011  0.106 0.001          0.109 0.001                0.274 0.014
+stack                0.343 0.011           0.065 0.043  0.183 0.006          0.086 0.005                0.726 0.076
+tcell_copy           0.364 0.008           0.069 0.030  0.195 0.004          0.118 0.004                0.799 0.045
+
+2) Stack vs each baseline, paired over units (seed-averaged)
+         metric           vs  n  stack_wins  mean_diff
+  Pearson Delta    no_effect 24          24      0.354
+  Pearson Delta perturb_mean 24          14      0.011
+  Pearson Delta   tcell_copy 24          12     -0.020
+DE Spearman LFC    no_effect 24          21      0.245
+DE Spearman LFC perturb_mean 24           3     -0.165
+DE Spearman LFC   tcell_copy 24          10     -0.005
+         PR AUC    no_effect 24          24      0.088
+         PR AUC perturb_mean 24          21      0.077
+         PR AUC   tcell_copy 24          11     -0.012
+ DE overlap acc    no_effect 24          21      0.086
+ DE overlap acc perturb_mean 24          10     -0.023
+ DE overlap acc   tcell_copy 24           6     -0.032
+
+3) Stack across three generation seeds (downsampling seed 0)
+         Pearson Delta  DE Spearman LFC  PR AUC  DE overlap acc  Spearman effect size
+tag                                                                                  
+T5_gen0          0.356            0.113   0.188           0.092                 0.649
+T5_gen1          0.338            0.041   0.178           0.079                 0.703
+T5_gen2          0.343            0.034   0.180           0.082                 0.587
+mean: {'Pearson Delta': 0.346, 'DE Spearman LFC': 0.063, 'PR AUC': 0.182, 'DE overlap acc': 0.084, 'Spearman effect size': 0.646}
+sd:   {'Pearson Delta': 0.009, 'DE Spearman LFC': 0.043, 'PR AUC': 0.005, 'DE overlap acc': 0.007, 'Spearman effect size': 0.058}
+
+4) Five-step vs one-step generation (Stack)
+         metric  n  T5_mean  T1_mean  T5_wins  mean_diff
+  Pearson Delta 24    0.356    0.298       21      0.058
+DE Spearman LFC 24    0.113    0.034       20      0.079
+         PR AUC 24    0.188    0.164       20      0.024
+ DE overlap acc 24    0.092    0.069       17      0.023
+
+5) Split-half ceiling (split seeds [np.int64(0), np.int64(1), np.int64(2)]): real_half = independent half of real cells
+             Pearson Delta       DE Spearman LFC       PR AUC       DE overlap acc       Spearman effect size      
+                      mean   std            mean   std   mean   std           mean   std                 mean   std
+method                                                                                                             
+no_effect           -0.031 0.018          -0.233 0.040  0.057 0.000          0.000 0.000               -0.130 0.174
+perturb_mean         0.269 0.025           0.103 0.021  0.067 0.002          0.052 0.004                0.222 0.078
+real_half            0.614 0.008           0.164 0.024  0.296 0.002          0.290 0.008                0.929 0.027
+stack                0.266 0.011          -0.139 0.014  0.111 0.002          0.064 0.003                0.749 0.038
+tcell_copy           0.294 0.007           0.017 0.017  0.127 0.001          0.088 0.008                0.724 0.085
+              delta_slope  de_nsig_counts_real  de_nsig_counts_pred  n_real_cells
+method                                                                           
+no_effect          -0.019               70.500                0.000        34.000
+perturb_mean        0.152               70.500              786.000        34.000
+real_half           0.625               70.500               68.000        34.000
+stack               0.188               70.500               22.500        34.000
+tcell_copy          0.203               70.500               24.000        34.000
+
+6) Slope of predicted on real pseudobulk delta, and DE-gene counts (median over units)
+              delta_slope  delta_norm_pred  delta_norm_real  de_nsig_counts_pred  de_nsig_counts_real
+method                                                                                               
+no_effect          -0.003            2.328            4.461                0.000              128.000
+perturb_mean        0.203            3.166            4.461              829.000              128.000
+stack               0.224            3.731            4.461               20.500              128.000
+tcell_copy          0.254            3.708            4.461               38.000              128.000

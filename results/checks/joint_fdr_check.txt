@@ -1,0 +1,34 @@
+
+myeloid leukocyte: real DE genes at FDR<0.05
+compound                   per-compound BH   joint BH (14)   joint BH (12, no pos. controls)   pipeline
+Belinostat                     1166           1066                     -1                   1066
+CHIR-99021                      174            226                    205                    226
+Crizotinib                       92            164                    140                    164
+Dabrafenib                      964            892                     -1                    892
+Dactolisib                      748            686                    653                    686
+Foretinib                       154            207                    182                    207
+Idelalisib                      315            330                    312                    330
+LDN 193189                       52            132                    108                    132
+Linagliptin                      49            129                    114                    129
+O-Demethylated Adapalene        109            178                    155                    178
+Palbociclib                      33            114                     85                    114
+Penfluridol                     117            177                    159                    177
+Porcn Inhibitor III             720            671                    641                    671
+R428                            658            613                    584                    613
+
+lymphocyte of b lineage: real DE genes at FDR<0.05
+compound                   per-compound BH   joint BH (14)   joint BH (12, no pos. controls)   pipeline
+Belinostat                      739            561                     -1                    561
+CHIR-99021                       16             32                     25                     32
+Crizotinib                       56             72                     57                     72
+Dabrafenib                      143            139                     -1                    139
+Dactolisib                      169            154                    129                    154
+Foretinib                       136            127                    114                    127
+Idelalisib                      122            120                    109                    120
+LDN 193189                       15             30                     26                     30
+Linagliptin                      13             35                     22                     35
+O-Demethylated Adapalene         21             29                     25                     29
+Palbociclib                      18             33                     22                     33
+Penfluridol                      26             34                     29                     34
+Porcn Inhibitor III             124            123                    115                    123
+R428                             64             72                     63                     72

@@ -1,0 +1,9 @@
+# Bar heights read by eye from Fig. 3E of Dong et al. 2026 (bioRxiv 10.64898/2026.01.09.698608, F3.large.jpg).
+# Accuracy is about +-0.02. Panel titles give Stack's gain over the best non-Stack baseline:
+# Pearson Delta +11.1%, DE Spearman LFC +3.5%, PR-AUC +10.0%, DE Overlap Acc. +119.8%, Spearman Effect Size +8.9%.
+metric,Stack,State,Closest cell type in prompt,Original query,PerturbMean,scVI
+Pearson Delta,0.57,0.22,0.52,0.00,0.50,0.11
+DE Spearman LFC,0.50,0.17,0.44,0.00,0.49,0.05
+PR-AUC,0.39,0.19,0.36,0.08,0.11,0.10
+DE Overlap Acc.,0.38,0.13,0.17,0.02,0.12,0.04
+Spearman Effect Size,0.67,0.60,0.54,,0.59,0.09

@@ -1,0 +1,8 @@
+lymphocyte of b lineage / Porcn Inhibitor III
+  Pearson Delta stack      by hand 0.813171   pipeline 0.813171
+  Pearson Delta tcell_copy by hand 0.904930   pipeline 0.904930
+  real DE genes (FDR<0.05) by hand 124   pipeline 123
+myeloid leukocyte / Penfluridol
+  Pearson Delta stack      by hand 0.643716   pipeline 0.643716
+  Pearson Delta tcell_copy by hand 0.548862   pipeline 0.548862
+  real DE genes (FDR<0.05) by hand 117   pipeline 177

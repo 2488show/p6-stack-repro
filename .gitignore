@@ -1,0 +1,12 @@
+# data, weights, predictions and scratch are not tracked
+data/
+model/
+out/
+logs/
+results/remote/
+.venv/
+__pycache__/
+.DS_Store
+*.h5ad
+*.ckpt
+*.tgz
