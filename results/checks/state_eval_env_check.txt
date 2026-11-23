@@ -1,0 +1,8 @@
+units compared: 28 (both cell types x 14 compounds)
+pearson_delta          max |new - old| = 0
+pr_auc                 max |new - old| = 0
+overlap_at_N           max |new - old| = 0
+de_spearman_lfc_sig    max |new - old| = 0
+de_spearman_sig        max |new - old| = 0
+de_nsig_counts_real    max |new - old| = 0
+de_nsig_counts_pred    max |new - old| = 0

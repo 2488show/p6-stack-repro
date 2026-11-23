@@ -1,0 +1,114 @@
+{
+ "n_genes": 11018,
+ "n_hvg": 2000,
+ "target_sum": 2463.5,
+ "train_log1p_max": 7.421124458312988,
+ "cells_removed_test": 1634,
+ "cells_val_pc": 5014,
+ "cells_train": 25882,
+ "train_cells_by_ct_pert": [
+  [
+   "b_lineage",
+   "Dimethyl_Sulfoxide",
+   "1320"
+  ],
+  [
+   "myeloid",
+   "Dimethyl_Sulfoxide",
+   "1528"
+  ],
+  [
+   "t_nk",
+   "Belinostat",
+   "6319"
+  ],
+  [
+   "t_nk",
+   "CHIR-99021",
+   "426"
+  ],
+  [
+   "t_nk",
+   "Crizotinib",
+   "381"
+  ],
+  [
+   "t_nk",
+   "Dabrafenib",
+   "5788"
+  ],
+  [
+   "t_nk",
+   "Dactolisib",
+   "365"
+  ],
+  [
+   "t_nk",
+   "Dimethyl_Sulfoxide",
+   "6249"
+  ],
+  [
+   "t_nk",
+   "Foretinib",
+   "356"
+  ],
+  [
+   "t_nk",
+   "Idelalisib",
+   "366"
+  ],
+  [
+   "t_nk",
+   "LDN_193189",
+   "409"
+  ],
+  [
+   "t_nk",
+   "Linagliptin",
+   "401"
+  ],
+  [
+   "t_nk",
+   "O-Demethylated_Adapalene",
+   "330"
+  ],
+  [
+   "t_nk",
+   "Palbociclib",
+   "414"
+  ],
+  [
+   "t_nk",
+   "Penfluridol",
+   "379"
+  ],
+  [
+   "t_nk",
+   "Porcn_Inhibitor_III",
+   "533"
+  ],
+  [
+   "t_nk",
+   "R428",
+   "318"
+  ]
+ ],
+ "infer_rows": 42720,
+ "query_cells": 2848,
+ "compounds": [
+  "Belinostat",
+  "CHIR-99021",
+  "Crizotinib",
+  "Dabrafenib",
+  "Dactolisib",
+  "Foretinib",
+  "Idelalisib",
+  "LDN_193189",
+  "Linagliptin",
+  "O-Demethylated_Adapalene",
+  "Palbociclib",
+  "Penfluridol",
+  "Porcn_Inhibitor_III",
+  "R428"
+ ]
+}

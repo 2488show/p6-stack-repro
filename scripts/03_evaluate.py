@@ -14,6 +14,9 @@ Methods compared
 - perturb_mean  query cells + (mean T/NK compound - mean T/NK DMSO); control = query cells
 - no_effect     query cells unchanged; control = query cells
 - real_half     (only with --split-real) an independent half of the real cells = noise ceiling
+- state         State transition model trained on this split (scripts/21-24, --state-dir);
+                control = State's own prediction for DMSO (its "synthetic control", same rule as stack)
+- state_realctrl  the same State predictions, control = real query cells (sensitivity only)
 
 With --split-real every method is scored against a random half of the real cells, and the
 other half is scored as a prediction. That shows how high the metrics can go at this sample size.
@@ -82,7 +85,8 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", default="data/openproblems_donor1.h5ad")
     ap.add_argument("--genelist", default="model/basecount_1000per_15000max.pkl")
-    ap.add_argument("--pred-dir", required=True, help="directory written by stack-generation")
+    ap.add_argument("--pred-dir", default=None, help="directory written by stack-generation")
+    ap.add_argument("--state-dir", default=None, help="per-compound State predictions (scripts/24_state_to_eval.py)")
     ap.add_argument("--tag", required=True)
     ap.add_argument("--outdir", default="results/eval")
     ap.add_argument("--seed", type=int, default=0, help="seed for downsampling / splitting")
@@ -131,6 +135,16 @@ def main() -> None:
             if args.logit_max is not None and "gen_logit" in p.obs:
                 p = p[p.obs["gen_logit"].to_numpy() <= args.logit_max].copy()
             stack_pred[d] = p
+
+    # ---- State predictions: one file per compound, columns = dataset genes (shared universe) ----
+    state_pred: dict[str, ad.AnnData] = {}
+    if any(m.startswith("state") for m in methods):
+        assert args.state_dir, "--state-dir is required for the state methods"
+        for d in drugs + [CTRL]:
+            p = ad.read_h5ad(os.path.join(args.state_dir, sanitize(d) + ".h5ad"))
+            pos = {str(g).upper(): i for i, g in enumerate(p.var_names)}
+            assert all(g in pos for g in genes_upper), "State output misses genes of the evaluation universe"
+            state_pred[d] = p[:, [pos[g] for g in genes_upper]].copy()
 
     rows = []
     for ct in held_out:
@@ -187,6 +201,12 @@ def main() -> None:
                     return lognorm_cols(p.X[(p.obs[CT].astype(str) == ct).to_numpy()], hvg_cols)
                 pred_ctrl = sp_block(CTRL)
                 groups = {d: take(sp_block(d), n_real[d]) for d in drugs}
+            elif method in ("state", "state_realctrl"):
+                def st_block(d):
+                    p = state_pred[d]
+                    return lognorm_cols(p.X[(p.obs[CT].astype(str) == ct).to_numpy()], hvg_cols)
+                pred_ctrl = st_block(CTRL) if method == "state" else base_query
+                groups = {d: take(st_block(d), n_real[d]) for d in drugs}
             elif method == "tcell_copy":
                 pred_ctrl = take(t_ctrl, query.shape[0])
                 groups = {d: take(t_groups[d], n_real[d]) for d in drugs}

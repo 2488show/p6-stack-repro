@@ -1,0 +1,17 @@
+[datasets]
+pbmc = "/content/p6state/data/state/train/"
+
+[training]
+pbmc = "train"
+
+[zeroshot]
+
+[fewshot]
+
+[fewshot."pbmc.b_lineage"]
+val = ["Belinostat", "Dabrafenib"]
+test = ["Belinostat", "Dabrafenib"]
+
+[fewshot."pbmc.myeloid"]
+val = ["Belinostat", "Dabrafenib"]
+test = ["Belinostat", "Dabrafenib"]
