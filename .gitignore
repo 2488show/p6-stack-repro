@@ -10,3 +10,11 @@ __pycache__/
 *.h5ad
 *.ckpt
 *.tgz
+.venv-*/
+runs/
+snapshot_state*.tgz
+.uv-cache/
+.uv-python/
+.hf-cache/
+.venv-state
+results/eval/*/

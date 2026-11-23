@@ -1,0 +1,13 @@
+metric,ref,vs,n_units,ref_wins,mean_diff,cell_type,ref_mean,vs_mean
+Pearson Delta,state_s42,tcell_copy,24,0,-0.11271647751952212,,,
+Pearson Delta,state_s42,stack,24,1,-0.13239391691361865,,,
+Pearson Delta,state_s42,perturb_mean,24,2,-0.10755156120285392,,,
+PR AUC,state_s42,tcell_copy,24,8,-0.05687132126698019,,,
+PR AUC,state_s42,stack,24,8,-0.047524563792358,,,
+PR AUC,state_s42,perturb_mean,24,21,0.08450903045233778,,,
+DE overlap acc,state_s42,tcell_copy,24,8,-0.03885295501460147,,,
+DE overlap acc,state_s42,stack,24,4,-0.07956400261393369,,,
+DE overlap acc,state_s42,perturb_mean,24,16,0.01596796531278998,,,
+DE Spearman LFC,state_s42,tcell_copy,24,15,0.04171033321957413,,,
+DE Spearman LFC,state_s42,stack,24,4,-0.17137334262952209,,,
+DE Spearman LFC,state_s42,perturb_mean,24,2,-0.2278365733412405,,,

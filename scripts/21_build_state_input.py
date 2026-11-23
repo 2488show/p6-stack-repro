@@ -29,6 +29,7 @@ cell-load reads with h5py; anndata 0.13 writes them as nullable-string groups th
 """
 from __future__ import annotations
 
+import os
 import json
 import pickle
 import re
@@ -41,7 +42,7 @@ import pandas as pd
 import scanpy as sc
 import scipy.sparse as sp
 
-ROOT = Path("/content/p6state")
+ROOT = Path(os.environ.get("P6_ROOT", "/content/p6state"))
 OUT = ROOT / "data/state"
 CTRL_RAW = "Dimethyl Sulfoxide"
 PCS = ["Belinostat", "Dabrafenib"]

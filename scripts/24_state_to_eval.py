@@ -26,7 +26,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--pred", required=True)
     ap.add_argument("--outdir", required=True)
-    ap.add_argument("--build-info", default="/content/p6state/data/state/build_info.json")
+    ap.add_argument("--build-info", default=os.path.join(os.environ.get("P6_ROOT", "/content/p6state"), "data/state/build_info.json"))
     ap.add_argument("--clip", type=float, default=None, help="clip log1p predictions to this maximum")
     args = ap.parse_args()
     os.makedirs(args.outdir, exist_ok=True)

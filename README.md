@@ -122,12 +122,13 @@ cell types, versus one donor and a fixed T/NK prompt here.
   different counts (myeloid, Palbociclib: 33 per compound, 114 jointly over 14 compounds, 85 jointly over 12).
 - Classifier-logit filter used for Perturb Sapiens (logit <= 2.5) keeps at least 99.9% of generated cells; no material change.
 
-### 7. State baseline: prepared and tested, not finished (no State numbers yet)
+### 7. State baseline (trained on this donor, single seed)
 
 The paper compares Stack with State, a model trained on perturbation data. This section adds Arc's State
 transition model (`arc-state` 0.11.1, `model=state`, trained from scratch here, no pretrained weights) as a
-trained baseline in the same evaluation. The pipeline runs end to end, but the training run was lost with its
-Colab runtime and Colab then refused a new T4 for over an hour, so **there is no State row in the tables yet**.
+trained baseline in the same evaluation. The first training run was lost with its Colab runtime and Colab then
+refused a new T4; the run reported here was trained on the Mac mini's Apple-silicon GPU (MPS) with the same
+split, settings and scripts (see "Run on the Mac" below).
 
 **Split (Setting 1, `scripts/21_build_state_input.py`, `results/state/build_info.json`).**
 Removed from the training file: the 24 test units (12 compounds x B-lineage/myeloid, 1,634 cells).
@@ -158,7 +159,41 @@ for DE is State's own prediction for DMSO, the same rule as Stack's synthetic co
 `state_realctrl` uses the real query cells instead (sensitivity). Everything else is the unchanged evaluation:
 downsampling seeds 0-2, no-downsample sensitivity, paired wins vs `tcell_copy` and Stack (`scripts/25_state_report.py`).
 
-**What was run, and what went wrong.**
+**Results (2,500 steps, training seed 42, best checkpoint; `results/summary/state_*.csv`).**
+
+| Method (12 compounds, 24 units, 3 downsampling seeds) | Pearson Delta | PR AUC | DE overlap | DE Spearman LFC | Spearman effect size |
+| --- | --- | --- | --- | --- | --- |
+| no_effect | -0.011 | 0.094 | 0.000 | -0.180 | -0.156 |
+| perturb_mean | 0.332 | 0.106 | 0.109 | 0.229 | 0.274 |
+| **State (trained on this donor)** | **0.237** (sd 0.020) | 0.162 | 0.087 | 0.027 | 0.741 |
+| Stack (zero-shot) | 0.343 | 0.183 | 0.086 | 0.065 | 0.726 |
+| tcell_copy | 0.364 | 0.195 | 0.118 | 0.069 | 0.799 |
+
+- Paired over the 24 units (Pearson Delta): State beats no_effect in 23/24, but tcell_copy in 0/24 and Stack in
+  1/24; by cell type, State is 0.341 on B-lineage (tcell_copy 0.468, Stack 0.380) and 0.132 on myeloid cells
+  (tcell_copy 0.259, Stack 0.306). On PR AUC State beats perturb_mean in 22/24, tcell_copy in 7/24, Stack in 9/24.
+- No-downsample sensitivity (seed 0, every predicted cell): State 0.336 Pearson Delta vs Stack 0.468 and
+  tcell_copy 0.449; 0/24 wins vs tcell_copy, 1/24 vs Stack.
+- DE control: with the real query cells instead of State's own DMSO prediction (seed 0), Pearson Delta 0.196
+  instead of 0.217 and Spearman effect size 0.28 instead of 0.75; the own-control rule (as for Stack) is the main row.
+- Predicted effects are small: median slope of predicted on real pseudobulk delta 0.08 (Stack 0.22, tcell_copy
+  0.25); median DE genes per unit 19.5 (Stack 20.5, real 128).
+- Validation loss (positive controls) was still falling at the last step (best checkpoint = step 2,499,
+  `results/state/metrics_s42_mac.csv`), unlike the lost Colab run where it flattened; State may be under-trained
+  here. One training seed only.
+
+So on this slice a model trained on the same donor's T/NK x compound data does **worse** than both the zero-shot
+Stack and the zero-parameter "copy the T cells" baseline. This is one donor, one seed and 2,500 steps; it is not
+a test of State in its intended setting (many cell lines, large training sets).
+
+**Run on the Mac (2026-11-23).** Same split (the regenerated `build_info.json` is identical to the Colab one),
+same hyper-parameters, except 4 data workers. Scripts take `P6_ROOT` (working folder, default `/content/p6state`),
+`STATE_ACCEL=mps` (`scripts/state_cli.py` switches Lightning's accelerator from cpu to Apple's GPU; nothing else
+changes) and `NW` (data workers). Training took 35 min (about 1.2 steps/s); prediction and all five evaluations
+about 3 min. Package versions: `results/state/env_freeze_*_mac.txt` (arc-state 0.11.1, cell-load 0.10.4,
+anndata 0.13.4, torch 2.15.0; evaluation venv as on Colab).
+
+**History: the lost Colab run.**
 - Two 60-step benchmarks (per-cell vs batched reader) and a full test of infer -> conversion -> `03_evaluate.py`
   on the 60-step model: all steps work. (That model has essentially no signal; its numbers are not reported.)
 - A 4,000-step training run was last seen at about step 2,650 after about 70 min; about 15 min later the runtime
@@ -174,28 +209,20 @@ downsampling seeds 0-2, no-downsample sensitivity, paired wins vs `tcell_copy` a
 - On a CPU runtime: the evaluation environment of this section reproduces the original no-downsample
   `tcell_copy` evaluation exactly (all 28 units, all metrics, `results/checks/state_eval_env_check.txt`).
 
-**To finish it** (needs a T4 runtime; about 1 h of T4 time for 2,500 steps, then about 40 min of CPU for scoring):
+**Reproduce** (Mac with Apple silicon; on Colab drop the first line's `STATE_ACCEL`/`NW` and use the defaults):
 
 ```bash
-colab new -s p6state --gpu T4                          # on the Mac; then rsync scripts/ to /content/p6state
-                                                        # over scripts/colab_ssh.sh (ControlMaster); run the rest there
-bash scripts/20_setup_state_colab.sh                    # venvs + data
+export P6_ROOT=$PWD STATE_ACCEL=mps PYTORCH_ENABLE_MPS_FALLBACK=1 NW=4   # use a path without spaces
+bash scripts/20_setup_state_colab.sh                    # venvs + data (needs uv; set HF_HOME/UV_CACHE_DIR if ~/.cache is not writable)
 .venv-eval/bin/python scripts/21_build_state_input.py   # split, toml, inference input
-nohup bash scripts/28_state_run.sh s42 2500 42 full > logs/pipeline.log 2>&1 &   # train, infer, evaluate
-zsh scripts/29_pull_state.sh p6state s42                # on the Mac: pulls logs, results, slim best checkpoint
-python scripts/25_state_report.py s42                   # tables in results/summary/state_*.csv
+bash scripts/28_state_run.sh s42 2500 42 full           # train, infer, evaluate (needs about 5 GB free disk for the prediction file)
+.venv-eval/bin/python scripts/25_state_report.py s42    # tables in results/summary/state_*.csv
 ```
-
-2,500 steps instead of 4,000: the lost run's validation loss had its minimum near step 2,300 and the best
-checkpoint (not the last) is used anyway. If the runtime dies after training, the slim best checkpoint on the Mac
-is meant to be enough to run `23_state_infer.sh` and the evaluations on a CPU runtime (`28`/`29` and the slim
-checkpoint were written after the runtime was lost and have not been run yet; `25_state_report.py` has only been
-run without State results).
 
 ## Limits
 
 - One donor, one prompt design, 12 compounds; ground-truth groups have 13-128 cells.
-- State baseline: prepared but not trained to completion (section 7); scVI was not run. `tcell_copy` and
+- State baseline: one training seed, 2,500 steps, validation loss still falling (section 7); scVI was not run. `tcell_copy` and
   `perturb_mean` are my implementations of the paper's one-line descriptions of "closest cell type in prompt"
   and "PerturbMean".
 - The paper's cell-count matching rule is ambiguous to me; section 4 shows the result depends on it.

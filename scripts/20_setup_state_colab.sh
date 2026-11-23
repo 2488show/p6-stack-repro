@@ -7,7 +7,7 @@
 # Data: the same Hugging Face dataset as scripts/00_setup_colab.sh, plus Stack's gene list
 # (only the 925 kB .pkl, which 03_evaluate.py uses to define the shared gene universe).
 set -euo pipefail
-ROOT=/content/p6state
+ROOT="${P6_ROOT:-/content/p6state}"
 mkdir -p "$ROOT" && cd "$ROOT"
 
 if [ ! -x .venv-eval/bin/python ]; then
@@ -40,7 +40,8 @@ snapshot_download("arcinstitute/Stack-DrugPBMC-Example", repo_type="dataset", lo
                   allow_patterns=["openproblems_donor1.h5ad"])
 EOF
 ls -la model data
-sha256sum model/basecount_1000per_15000max.pkl data/openproblems_donor1.h5ad
+if command -v sha256sum >/dev/null; then SHA=(sha256sum); else SHA=(shasum -a 256); fi
+"${SHA[@]}" model/basecount_1000per_15000max.pkl data/openproblems_donor1.h5ad
 uv pip freeze --python .venv-state/bin/python > env_freeze_state.txt
 uv pip freeze --python .venv-eval/bin/python > env_freeze_eval.txt
 echo "SETUP_DONE"

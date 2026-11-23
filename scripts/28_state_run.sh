@@ -6,7 +6,7 @@
 # slim-checkpoint loop and the Mac-side puller (scripts/29_pull_state.sh).
 set -uo pipefail
 RUN="${1:?run}"; STEPS="${2:?steps}"; SEED="${3:-42}"; MODE="${4:-full}"
-R=/content/p6state
+R="${P6_ROOT:-/content/p6state}"
 cd "$R"
 CK=runs/$RUN/pbmc/checkpoints
 slim_loop() {

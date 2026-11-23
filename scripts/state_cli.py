@@ -5,6 +5,7 @@ torch >= 2.6 defaults torch.load to weights_only=True, which rejects self-traine
 defaulted. Only used for checkpoints this project trained itself. Nothing else is changed.
 Usage: python scripts/state_cli.py tx train ... | tx infer ...
 """
+import os
 import sys
 
 import numpy as np
@@ -24,6 +25,20 @@ def _load(*a, **k):
 
 
 torch.load = _load
+
+# Optional: STATE_ACCEL=mps lets arc-state train on Apple-silicon GPUs (its entry point picks "gpu" if CUDA
+# is available and "cpu" otherwise). Only the Trainer's accelerator argument changes.
+ACCEL = os.environ.get("STATE_ACCEL")
+if ACCEL:
+    import lightning.pytorch as pl
+    _init = pl.Trainer.__init__
+
+    def _patched(self, *a, **k):
+        if k.get("accelerator") == "cpu":
+            k["accelerator"] = ACCEL
+        return _init(self, *a, **k)
+
+    pl.Trainer.__init__ = _patched
 
 if __name__ == "__main__":
     from state.__main__ import main

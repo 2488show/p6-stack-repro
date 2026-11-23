@@ -13,7 +13,7 @@
 #   3 min instead of 9 min; the per-cell reader on 2 vCPUs left the GPU idle (README section 7).
 set -uo pipefail
 NAME="${1:?run name}"; STEPS="${2:?max steps}"; SEED="${3:-42}"; VF="${4:-100}"
-R=/content/p6state
+R="${P6_ROOT:-/content/p6state}"
 cd "$R"
 export MPLBACKEND=Agg
 mkdir -p logs runs
@@ -26,7 +26,7 @@ echo "START $NAME steps=$STEPS seed=$SEED val_freq=$VF $(date -u +%FT%TZ)"
   data.kwargs.batch_col=plate \
   data.kwargs.control_pert=Dimethyl_Sulfoxide \
   data.kwargs.output_space=all \
-  data.kwargs.num_workers=2 \
+  data.kwargs.num_workers=${NW:-2} \
   data.kwargs.use_consecutive_loading=true \
   model=state \
   model.kwargs.cell_set_len=256 \

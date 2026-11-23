@@ -7,7 +7,7 @@
 # After every evaluation the small result files are packed into snapshot_state.tgz for pulling.
 set -uo pipefail
 RUN="${1:?run}"; MODE="${2:-full}"
-R=/content/p6state
+R="${P6_ROOT:-/content/p6state}"
 cd "$R"
 export MPLBACKEND=Agg
 mkdir -p results/eval results/summary logs

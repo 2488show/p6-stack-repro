@@ -8,7 +8,7 @@
 # B-lineage and 1,528 myeloid predicted cells; the DMSO rows give State's own predicted control.
 set -euo pipefail
 NAME="${1:?run}"; CK="${2:-best}"; SEED="${3:-42}"; TAG="${4:?out tag}"
-R=/content/p6state
+R="${P6_ROOT:-/content/p6state}"
 cd "$R"
 export MPLBACKEND=Agg
 RUN=$R/runs/$NAME/pbmc
