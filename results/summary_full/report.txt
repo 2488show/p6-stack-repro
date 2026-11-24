@@ -1,0 +1,105 @@
+designs: ['d1_B', 'd1_M', 'd1_T', 'd2_B', 'd2_M', 'd2_T', 'd3_B', 'd3_M', 'd3_T']
+units per method: {'nearest_ct': 216, 'no_effect': 216, 'perturb_mean': 216, 'prompt_copy': 216, 'stack': 216}
+
+1) All designs pooled: mean over units (12 compounds, positive controls excluded)
+              Pearson Delta  PR AUC  DE overlap  DE Spearman LFC  Spearman effect size
+method                                                                                
+no_effect             0.007   0.091       0.001           -0.164                -0.098
+perturb_mean          0.361   0.102       0.086            0.198                 0.204
+stack                 0.416   0.210       0.102            0.159                 0.454
+nearest_ct            0.426   0.221       0.189            0.197                 0.644
+prompt_copy           0.445   0.246       0.178            0.192                 0.705
+
+2) Paired wins, Stack vs each baseline (unit = design x target x compound; Wilcoxon p)
+         metric           vs  stack_wins   n  mean_diff  wilcoxon_p
+  Pearson Delta  prompt_copy          95 216     -0.029       0.013
+  Pearson Delta   nearest_ct          99 216     -0.010       0.360
+  Pearson Delta perturb_mean         132 216      0.055       0.000
+  Pearson Delta    no_effect         213 216      0.408       0.000
+         PR AUC  prompt_copy          69 216     -0.036       0.000
+         PR AUC   nearest_ct          80 216     -0.011       0.004
+         PR AUC perturb_mean         201 216      0.107       0.000
+         PR AUC    no_effect         212 216      0.119       0.000
+     DE overlap  prompt_copy          37 216     -0.076       0.000
+     DE overlap   nearest_ct          29 216     -0.087       0.000
+     DE overlap perturb_mean         105 216      0.016       0.222
+     DE overlap    no_effect         203 216      0.101       0.000
+DE Spearman LFC  prompt_copy          91 216     -0.033       0.005
+DE Spearman LFC   nearest_ct          89 216     -0.038       0.001
+DE Spearman LFC perturb_mean          95 216     -0.039       0.006
+DE Spearman LFC    no_effect         208 216      0.323       0.000
+
+3) Pearson Delta by design and target (and Stack wins vs prompt_copy)
+method                  nearest_ct  no_effect  perturb_mean  prompt_copy  stack  stack_wins_vs_copy  n_units
+design prompt  target                                                                                       
+d1_B   B       Myeloid       0.346      0.006         0.305        0.343  0.313                   6       12
+               T/NK          0.681      0.019         0.532        0.681  0.490                   0       12
+d1_M   Myeloid B             0.429     -0.005         0.352        0.430  0.409                   5       12
+               T/NK          0.446      0.021         0.320        0.448  0.489                   7       12
+d1_T   T/NK    B             0.579     -0.024         0.482        0.597  0.527                   4       12
+               Myeloid       0.194      0.020         0.270        0.289  0.363                   9       12
+d2_B   B       Myeloid       0.368     -0.010         0.324        0.371  0.332                   4       12
+               T/NK          0.697     -0.001         0.510        0.698  0.575                   2       12
+d2_M   Myeloid B             0.423      0.009         0.313        0.419  0.356                   4       12
+               T/NK          0.535      0.029         0.395        0.535  0.560                   7       12
+d2_T   T/NK    B             0.472      0.016         0.434        0.529  0.541                   8       12
+               Myeloid       0.284     -0.017         0.342        0.360  0.434                   8       12
+d3_B   B       Myeloid       0.254      0.034         0.236        0.261  0.221                   7       12
+               T/NK          0.588      0.019         0.435        0.589  0.442                   2       12
+d3_M   Myeloid B             0.331      0.027         0.272        0.331  0.300                   4       12
+               T/NK          0.400      0.024         0.306        0.400  0.422                   7       12
+d3_T   T/NK    B             0.474      0.004         0.408        0.475  0.395                   2       12
+               Myeloid       0.164     -0.035         0.262        0.249  0.310                   9       12
+
+4) By prompt -> target pair (pooled over donors), Pearson Delta
+method           nearest_ct  no_effect  perturb_mean  prompt_copy  stack  stack_wins_vs_copy   n
+prompt  target                                                                                  
+B       Myeloid       0.323      0.010         0.288        0.325  0.289                  17  36
+        T/NK          0.655      0.012         0.493        0.656  0.502                   4  36
+Myeloid B             0.394      0.010         0.312        0.393  0.355                  13  36
+        T/NK          0.460      0.025         0.340        0.461  0.490                  21  36
+T/NK    B             0.508     -0.002         0.441        0.534  0.488                  14  36
+        Myeloid       0.214     -0.011         0.291        0.299  0.369                  26  36
+
+5) By donor, Pearson Delta
+method  nearest_ct  no_effect  perturb_mean  prompt_copy  stack
+donor                                                          
+d1           0.446      0.006         0.377        0.465  0.432
+d2           0.463      0.004         0.386        0.485  0.466
+d3           0.368      0.012         0.320        0.384  0.348
+
+6) Noise ceiling (scored against half of the real cells, seed 0), pooled
+              Pearson Delta  PR AUC  DE overlap  DE Spearman LFC  Spearman effect size
+method                                                                                
+no_effect             0.015   0.057       0.001           -0.235                -0.084
+perturb_mean          0.322   0.065       0.052            0.095                 0.188
+stack                 0.355   0.150       0.096            0.032                 0.448
+nearest_ct            0.383   0.171       0.150            0.129                 0.653
+prompt_copy           0.390   0.184       0.146            0.091                 0.645
+real_half             0.712   0.405       0.388            0.280                 0.914
+
+7) Sensitivity: every predicted cell kept (no downsampling), pooled
+              Pearson Delta  PR AUC  DE overlap  DE Spearman LFC  Spearman effect size
+method                                                                                
+perturb_mean          0.456   0.148       0.108            0.507                 0.240
+prompt_copy           0.475   0.278       0.212            0.243                 0.684
+stack                 0.529   0.332       0.287            0.496                 0.387
+         metric           vs  stack_wins   n  mean_diff  wilcoxon_p
+  Pearson Delta  prompt_copy         147 216      0.053       0.000
+  Pearson Delta perturb_mean         152 216      0.072       0.000
+         PR AUC  prompt_copy         148 216      0.054       0.000
+         PR AUC perturb_mean         206 216      0.184       0.000
+     DE overlap  prompt_copy         154 216      0.075       0.000
+     DE overlap perturb_mean         180 216      0.179       0.000
+DE Spearman LFC  prompt_copy         188 216      0.253       0.000
+DE Spearman LFC perturb_mean         105 216     -0.012       0.681
+
+8) Effect-size shrinkage: median delta_slope (pred delta on real delta)
+method
+nearest_ct     0.444
+no_effect      0.005
+perturb_mean   0.282
+prompt_copy    0.428
+stack          0.359
+
+9) units skipped for < 10 real cells: 0

@@ -1,0 +1,6 @@
+cells 32530 32530 genes 21255 21265 common 21255
+genes only in sc_counts: ['AC002454.1', 'C3ORF80', 'CHRM3', 'CPXM1', 'ERG', 'IGHV4-59', 'IGLL1', 'LINC01122', 'MYCT1', 'RN7SL328P']
+per (compound x fine cell type): identical cell numbers: True identical UMI totals: True
+sorted per-cell UMI totals identical: True
+d1 (31361, 21265) compounds 15
+d2 (34043, 21265) compounds 15

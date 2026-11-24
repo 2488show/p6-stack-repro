@@ -1,0 +1,21 @@
+design  prompt  target  dmso_similarity  stack  prompt_copy  stack_minus_copy  stack_wins_vs_copy  n_units
+  d2_T    T/NK Myeloid            0.525  0.434        0.360             0.075                   8       12
+  d1_T    T/NK Myeloid            0.534  0.363        0.289             0.074                   9       12
+  d2_B       B Myeloid            0.540  0.332        0.371            -0.039                   4       12
+  d1_B       B Myeloid            0.567  0.313        0.343            -0.031                   6       12
+  d3_T    T/NK Myeloid            0.592  0.310        0.249             0.061                   9       12
+  d3_B       B Myeloid            0.599  0.221        0.261            -0.040                   7       12
+  d1_M Myeloid       B            0.736  0.409        0.430            -0.021                   5       12
+  d2_M Myeloid    T/NK            0.752  0.560        0.535             0.024                   7       12
+  d1_M Myeloid    T/NK            0.753  0.489        0.448             0.042                   7       12
+  d3_M Myeloid    T/NK            0.760  0.422        0.400             0.022                   7       12
+  d3_M Myeloid       B            0.774  0.300        0.331            -0.031                   4       12
+  d2_M Myeloid       B            0.775  0.356        0.419            -0.063                   4       12
+  d2_T    T/NK       B            0.840  0.541        0.529             0.012                   8       12
+  d2_B       B    T/NK            0.852  0.575        0.698            -0.123                   2       12
+  d3_T    T/NK       B            0.882  0.395        0.475            -0.080                   2       12
+  d3_B       B    T/NK            0.882  0.442        0.589            -0.147                   2       12
+  d1_B       B    T/NK            0.886  0.490        0.681            -0.191                   0       12
+  d1_T    T/NK       B            0.895  0.527        0.597            -0.070                   4       12
+
+Spearman (n=18): similarity vs Stack-minus-copy rho=-0.75 p=0.000; vs prompt_copy rho=0.78 p=0.000; vs stack rho=0.50 p=0.034

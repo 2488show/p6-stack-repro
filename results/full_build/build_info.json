@@ -1,0 +1,146 @@
+{
+ "compounds": [
+  "Belinostat",
+  "CHIR-99021",
+  "Crizotinib",
+  "Dabrafenib",
+  "Dactolisib",
+  "Dimethyl Sulfoxide",
+  "Foretinib",
+  "Idelalisib",
+  "LDN 193189",
+  "Linagliptin",
+  "O-Demethylated Adapalene",
+  "Palbociclib",
+  "Penfluridol",
+  "Porcn Inhibitor III",
+  "R428"
+ ],
+ "query_cap": 1000,
+ "donors": {
+  "Donor 1": {
+   "plates": [
+    "NeurIPS2023-010",
+    "NeurIPS2023-011"
+   ],
+   "n_cells": 31361,
+   "n_genes": 21265,
+   "cells_per_class": {
+    "t cell": 19094,
+    "lymphocyte of b lineage": 7075,
+    "myeloid leukocyte": 5192
+   }
+  },
+  "Donor 2": {
+   "plates": [
+    "NeurIPS2023-012",
+    "NeurIPS2023-013"
+   ],
+   "n_cells": 34043,
+   "n_genes": 21265,
+   "cells_per_class": {
+    "t cell": 23673,
+    "myeloid leukocyte": 6427,
+    "lymphocyte of b lineage": 3943
+   }
+  },
+  "Donor 3": {
+   "plates": [
+    "NeurIPS2023-014",
+    "NeurIPS2023-015"
+   ],
+   "n_cells": 32530,
+   "n_genes": 21265,
+   "cells_per_class": {
+    "t cell": 23034,
+    "myeloid leukocyte": 5035,
+    "lymphocyte of b lineage": 4461
+   }
+  }
+ },
+ "donor1_check": {
+  "same_table": false,
+  "same_cells": false,
+  "same_genes": false,
+  "same_counts_first1000": false,
+  "n_cells_full_vs_example": [
+   31361,
+   32530
+  ],
+  "max_abs_cell_count_diff": 1460
+ },
+ "designs": {
+  "d1_T": {
+   "prompt": "t cell",
+   "ctx_cells": 19094,
+   "test_cells": {
+    "lymphocyte of b lineage": 1000,
+    "myeloid leukocyte": 1000
+   }
+  },
+  "d1_B": {
+   "prompt": "lymphocyte of b lineage",
+   "ctx_cells": 7075,
+   "test_cells": {
+    "myeloid leukocyte": 1000,
+    "t cell": 1000
+   }
+  },
+  "d1_M": {
+   "prompt": "myeloid leukocyte",
+   "ctx_cells": 5192,
+   "test_cells": {
+    "lymphocyte of b lineage": 1000,
+    "t cell": 1000
+   }
+  },
+  "d2_T": {
+   "prompt": "t cell",
+   "ctx_cells": 23673,
+   "test_cells": {
+    "lymphocyte of b lineage": 1000,
+    "myeloid leukocyte": 1000
+   }
+  },
+  "d2_B": {
+   "prompt": "lymphocyte of b lineage",
+   "ctx_cells": 3943,
+   "test_cells": {
+    "myeloid leukocyte": 1000,
+    "t cell": 1000
+   }
+  },
+  "d2_M": {
+   "prompt": "myeloid leukocyte",
+   "ctx_cells": 6427,
+   "test_cells": {
+    "lymphocyte of b lineage": 1000,
+    "t cell": 1000
+   }
+  },
+  "d3_T": {
+   "prompt": "t cell",
+   "ctx_cells": 23034,
+   "test_cells": {
+    "lymphocyte of b lineage": 1000,
+    "myeloid leukocyte": 1000
+   }
+  },
+  "d3_B": {
+   "prompt": "lymphocyte of b lineage",
+   "ctx_cells": 4461,
+   "test_cells": {
+    "myeloid leukocyte": 1000,
+    "t cell": 1000
+   }
+  },
+  "d3_M": {
+   "prompt": "myeloid leukocyte",
+   "ctx_cells": 5035,
+   "test_cells": {
+    "lymphocyte of b lineage": 1000,
+    "t cell": 1000
+   }
+  }
+ }
+}

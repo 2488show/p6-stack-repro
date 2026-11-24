@@ -1,0 +1,9 @@
+d2_T / myeloid leukocyte / Palbociclib
+  stack       by hand 0.751236   pipeline 0.751236
+  prompt_copy by hand 0.582927   pipeline 0.582927
+d1_B / t cell / Penfluridol
+  stack       by hand 0.324782   pipeline 0.324782
+  prompt_copy by hand 0.556701   pipeline 0.556701
+d3_M / lymphocyte of b lineage / Crizotinib
+  stack       by hand 0.473632   pipeline 0.473633
+  prompt_copy by hand 0.357159   pipeline 0.357159

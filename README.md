@@ -5,6 +5,12 @@ Independent reproduction of one claim from *Stack: In-Context Learning of Single
 type as a prompt, the released model predicts the drug response of other cell types without any
 fine-tuning, and does so better than simple baselines (paper Fig. 3E, "Setting 1").
 
+**Summary.** On the example donor (sections 1-7) Stack ties with copying the prompt cells' response. On all 3
+donors x 3 prompt designs (section 8, 216 units) it is slightly below that zero-parameter baseline with matched
+cell numbers (Pearson Delta 0.416 vs 0.445), beats it only for distant prompt/target pairs (T/NK -> myeloid 26/36),
+and leads on Pearson Delta, PR AUC and the DE metrics only when scored with more predicted cells than the baseline. A State model trained on
+the donor scores lower still (section 7).
+
 Stack is not trained here. The released checkpoint is run as-is and its predictions are scored
 against real held-out cells, next to zero-parameter baselines and a split-half noise ceiling.
 
@@ -14,7 +20,7 @@ against real held-out cells, next to zero-parameter baselines and a split-half n
 |---|---|
 | Model | `arcinstitute/Stack-Large-Aligned` (217M parameters), sha256 `f93cf6f4...6ad36` |
 | Code | `ArcInstitute/stack` @ `cacc2e4b` (arc-stack 0.1.3), torch 2.5.1+cu121 |
-| Data | `arcinstitute/Stack-DrugPBMC-Example`: OpenProblems PBMC donor 1, 32,530 cells, 14 compounds + DMSO |
+| Data | `arcinstitute/Stack-DrugPBMC-Example`: OpenProblems PBMC "donor_1" (= OpenProblems Donor 3, section 8), 32,530 cells, 14 compounds + DMSO |
 | Prompt | T/NK cells of donor 1 under each compound (318-6,319 cells per condition) |
 | Query | 2,848 DMSO-treated B-lineage (1,320) and myeloid (1,528) cells of the same donor |
 | Target | the real B-lineage and myeloid cells under each compound (13-128 cells; positive controls 862-1,873) |
@@ -219,9 +225,113 @@ bash scripts/28_state_run.sh s42 2500 42 full           # train, infer, evaluate
 .venv-eval/bin/python scripts/25_state_report.py s42    # tables in results/summary/state_*.csv
 ```
 
+### 8. Three donors, every prompt design (2026-11-24)
+
+Sections 1-7 use one donor with a fixed T/NK prompt. The paper samples prompt cell types and uses all 3 donors,
+so this section repeats the evaluation on the full OpenProblems data with every broad cell class as the prompt.
+
+**Data (`scripts/40_build_full.py`).** `sc_counts.h5ad` from the OpenProblems NeurIPS 2023 bucket (raw counts in
+`layers/counts`, 301,785 cells). For each donor: the same 14 compounds + DMSO as the example, from the 2 plates on
+which that donor received them (31,361 / 34,043 / 32,530 cells); `cell_type` mapped to the example's three broad
+classes. **The example's "donor_1" is OpenProblems "Donor 3"**: same 32,530 cells, identical cell numbers and
+UMI totals per compound x cell type (the example drops 10 genes; `results/checks/donor_mapping_check.txt`).
+For donor 3 the example file is used, so donor 3 / T/NK prompt is the slice of sections 1-7.
+
+**Designs.** 3 donors x 3 prompt classes (T/NK, B-lineage, myeloid) = 9 designs; the other two classes are held
+out (2 of 3 classes, the paper's hold-out ratio 0.75 rounded). Prompt = the prompt class under all compounds +
+DMSO; query = DMSO cells of the held-out classes, capped at 1,000 per class (seeded) to bound T4 time. Generation
+as before (T=5, generation seed 0); 7.0-7.6 min per design on a T4 (`scripts/41_run_full.sh`). 9 designs x 2
+targets x 12 compounds = **216 units**; every unit has at least 13 real cells (none skipped).
+
+**Baselines (`scripts/43_evaluate_full.py`).** `prompt_copy` = `tcell_copy` with any prompt class.
+New: `nearest_ct`, the paper's "closest cell type in prompt": every query cell is matched to the prompt's fine
+cell type (CD4+ T, CD8+ T, Treg, NK for the T/NK class) whose DMSO pseudobulk correlates best with it, and the
+prediction samples cells of the matched types under d in those proportions (for B and myeloid prompts there is
+one fine type, so it equals `prompt_copy`). Cell numbers: every method predicts min(real cells, prompt cells
+under d) per unit; this equals the real number whenever the prompt is T/NK (as in sections 1-7), and is smaller
+for B/myeloid prompts with a T/NK target (those prompts have 13-164 cells per compound, the T/NK target 181-533).
+Scoring is unchanged: downsampling seeds 0-2, split-half ceiling, no-downsample sensitivity.
+Compact predictions were pulled to the Mac after each design and scored there (`scripts/42`, `44`);
+tables from `scripts/45_report_full.py` and `46_similarity_full.py`, in `results/summary_full/`.
+
+**Pooled over 216 units (12 compounds, mean over downsampling seeds):**
+
+| Method | Pearson Delta | PR AUC | DE overlap | DE Spearman LFC | Spearman effect size |
+|---|---|---|---|---|---|
+| no_effect | 0.007 | 0.091 | 0.001 | -0.164 | -0.098 |
+| perturb_mean | 0.361 | 0.102 | 0.086 | 0.198 | 0.204 |
+| **stack** | **0.416** | 0.210 | 0.102 | 0.159 | 0.454 |
+| nearest_ct | 0.426 | 0.221 | 0.189 | 0.197 | 0.644 |
+| prompt_copy | 0.445 | 0.246 | 0.178 | 0.192 | 0.705 |
+| real_half (ceiling run, about half the real cells) | 0.712 | 0.405 | 0.388 | 0.280 | 0.914 |
+
+Paired over the 216 units, Stack wins against `prompt_copy` on Pearson Delta in 95/216 (mean difference -0.029),
+PR AUC 69/216, DE overlap 37/216; against `nearest_ct` 99/216, 80/216, 29/216; against `perturb_mean` 132/216,
+201/216, 105/216; against `no_effect` 213/216. (Wilcoxon p-values are in `paired_wins.csv`; units share compounds
+and donors, so they are not independent and the p-values are descriptive only.)
+
+**By prompt -> target (Pearson Delta, 3 donors pooled, 36 units each):**
+
+| Prompt -> target | Stack | prompt_copy | Stack wins | DMSO similarity of prompt and target |
+|---|---|---|---|---|
+| T/NK -> myeloid | **0.369** | 0.299 | **26/36** | 0.52-0.59 |
+| myeloid -> T/NK | **0.490** | 0.461 | 21/36 | 0.75-0.76 |
+| B -> myeloid | 0.289 | 0.325 | 17/36 | 0.54-0.60 |
+| myeloid -> B | 0.355 | 0.393 | 13/36 | 0.74-0.78 |
+| T/NK -> B | 0.488 | 0.534 | 14/36 | 0.84-0.90 |
+| B -> T/NK | 0.502 | 0.656 | 4/36 | 0.85-0.89 |
+
+By donor (Pearson Delta, Stack vs prompt_copy): donor 1 0.432 vs 0.465, donor 2 0.466 vs 0.485, donor 3 0.348 vs
+0.384. The only designs where Stack wins both targets on average are donor 2 / T/NK prompt (B 0.541 vs 0.529,
+myeloid 0.434 vs 0.360). Across the 18 design x target cells, Stack's margin over `prompt_copy` falls as the prompt
+and target look more alike under DMSO (Spearman rho = -0.75, n = 18; similarity = Pearson of the DMSO pseudobulks
+on the target's HVGs, `similarity_vs_gain.csv`): copying is hard to beat when the target resembles the prompt.
+Similarity is not the whole story: B -> myeloid is as dissimilar as T/NK -> myeloid, yet Stack loses there; the B
+prompt has only 41-164 cells per compound.
+
+**Sensitivity: every predicted cell kept** (Stack 1,000 generated cells per class, `prompt_copy` all prompt cells
+under d): Stack 0.529 / 0.332 / 0.287 / 0.496 (Pearson Delta / PR AUC / DE overlap / DE Spearman LFC) vs
+`prompt_copy` 0.475 / 0.278 / 0.212 / 0.243; Stack wins 147/216, 148/216, 154/216, 188/216. With matched cell
+numbers Stack loses; when it may contribute more cells than the baseline it wins on all four (Spearman effect size
+stays lower: 0.39 vs 0.68). These numbers are
+also the closest to the paper's Fig. 3E (0.57 / 0.39 / 0.38 / 0.50). I do not know which rule the paper used.
+
+**Effect size.** Median slope of predicted on real pseudobulk delta: Stack 0.36, `prompt_copy` 0.43, `nearest_ct`
+0.44, `perturb_mean` 0.28.
+
+**Checks.**
+- Donor 3 / T/NK reproduces sections 1-7 with the new code and a different query sample (seed 0: Stack 0.340,
+  copy 0.360, vs 0.343 / 0.364 above).
+- `scripts/47_check_full.py`: Pearson Delta recomputed with numpy/scanpy for 3 units x 2 methods in 3 designs
+  matches the pipeline to 6 decimals (`results/checks/independent_check_full.txt`).
+- The donor files built on Colab (used for generation) and on the Mac (used for scoring) have identical
+  compound x cell type tables.
+
+**Reproduce.**
+
+```bash
+# Colab T4 (colab new -s p6full --gpu T4), /content/stack-repro, after scripts/00_setup_colab.sh
+wget -O /content/full/sc_counts.h5ad https://openproblems-bio.s3.amazonaws.com/public/neurips-2023-competition/sc_counts.h5ad
+python scripts/40_build_full.py /content/full/sc_counts.h5ad data/openproblems_donor1.h5ad data/full
+python scripts/40_build_full.py data/openproblems_donor1.h5ad data/openproblems_donor1.h5ad data/full_ex
+#   donor 3 = the example file: copy data/full_ex/d1_{T,B,M}_{ctx,test}.h5ad to data/full/d3_*, point d3_*.donorfile at data/full_ex/d1.h5ad
+bash scripts/41_run_full.sh                      # 9 generations, one .tgz of compact predictions per design
+# Mac: same two builds (d3.h5ad = data/full_ex/d1.h5ad), then pull + score while Colab generates
+scripts/44_pull_eval_full.sh p6full
+.venv-eval/bin/python scripts/45_report_full.py && .venv-eval/bin/python scripts/46_similarity_full.py
+.venv-eval/bin/python scripts/47_check_full.py
+```
+
+**Verdict.** On 3 donors and all prompt designs, with matched cell numbers, zero-shot Stack does not beat copying
+the prompt cells' response (or the closest prompt cell type). It does beat the mean-shift baseline and clearly beats
+"no change". Its advantage is limited to prompt/target pairs that differ more (T/NK -> myeloid: 26/36). The
+paper-like lead appears only when Stack is scored with more predicted cells than the baseline.
+
 ## Limits
 
-- One donor, one prompt design, 12 compounds; ground-truth groups have 13-128 cells.
+- 3 donors, 9 prompt designs, 12 compounds (sections 1-7: one donor, T/NK prompt); ground-truth groups have 13-533 cells.
+- Section 8: one generation seed per design; query capped at 1,000 DMSO cells per class; `nearest_ct` is my
+  implementation of the paper's description; units are not independent.
 - State baseline: one training seed, 2,500 steps, validation loss still falling (section 7); scVI was not run. `tcell_copy` and
   `perturb_mean` are my implementations of the paper's one-line descriptions of "closest cell type in prompt"
   and "PerturbMean".
